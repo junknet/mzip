@@ -13,6 +13,6 @@ fn main() {
     spawn(move || encoder.run());
     let mut res_file = File::create("./res.data").unwrap();
     for encoded_data in encoder_reciver {
-        println!("{}", encoded_data);
+        let _ = encoded_data.write(&mut res_file);
     }
 }

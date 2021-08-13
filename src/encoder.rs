@@ -1,6 +1,7 @@
 use std::{
     fmt::Display,
     fs::File,
+    io::Write,
     path::PathBuf,
     sync::mpsc::{sync_channel, Receiver, SyncSender},
 };
@@ -11,10 +12,20 @@ pub struct Encoder {
 }
 
 pub struct FileData {
-    name_len: usize,
+    name_len: u32,
     name: String,
-    data_len: usize,
+    data_len: u32,
     data: Vec<u8>,
+}
+
+impl FileData {
+    pub fn write(&self, file: &mut File) -> std::io::Result<()> {
+        file.write(&self.name_len.to_le_bytes())?;
+        file.write(self.name.as_bytes())?;
+        file.write(&self.data_len.to_le_bytes())?;
+        file.write(&self.data)?;
+        Ok(())
+    }
 }
 
 impl Display for FileData {
@@ -38,9 +49,9 @@ impl Encoder {
             if let Ok(res) = zstd::stream::encode_all(file, 0) {
                 let name = String::from(path.to_str().unwrap());
                 let file_data = FileData {
-                    name_len: name.len(),
+                    name_len: name.len() as u32,
                     name,
-                    data_len: res.len(),
+                    data_len: res.len() as u32,
                     data: res,
                 };
                 self.sender.send(file_data).unwrap();
