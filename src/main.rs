@@ -1,6 +1,12 @@
+pub mod decoder;
 mod encoder;
-use std::{fs::File, path::Path, thread::spawn};
+use std::{
+    fs::File,
+    path::{Path, PathBuf},
+    thread::spawn,
+};
 
+use decoder::read_file;
 use encoder::Encoder;
 use explorer::Explorer;
 
@@ -15,4 +21,9 @@ fn main() {
     for encoded_data in encoder_reciver {
         let _ = encoded_data.write(&mut res_file);
     }
+}
+
+#[test]
+fn name_len() {
+    read_file(PathBuf::from("./res.data"));
 }
