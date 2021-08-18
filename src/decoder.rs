@@ -4,7 +4,6 @@ use std::{
     path::PathBuf,
 };
 
-
 pub fn read_file(path: PathBuf) {
     let mut file = File::open(path).unwrap();
     let mut name_len: [u8; 4] = [0; 4];
@@ -17,8 +16,10 @@ pub fn read_file(path: PathBuf) {
     let mut data_len: [u8; 4] = [0; 4];
     file.read_exact(&mut data_len).unwrap();
     let data_len = u32::from_le_bytes(data_len) as usize;
+    println!("data_len: {}", &data_len);
     let mut data: Vec<u8> = vec![0; data_len];
     file.read_exact(&mut data).unwrap();
+    println!("data: {:?}", &data);
 
     let data = zstd::stream::decode_all(data.as_slice()).unwrap();
     let mut decode_data = File::create("decode.data").unwrap();

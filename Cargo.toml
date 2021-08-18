@@ -7,3 +7,5 @@ edition = "2018"
 [dependencies]
 walkdir = "2.3.2"
 zstd = "0.9.0+zstd.1.5.0"
+threadpool = "1.8.1"
+num_cpus = "1.13.0"
